@@ -1,0 +1,13 @@
+.git
+.idea
+.vscode
+.env.heroku
+
+venv
+__pycache__
+db.sqlite3
+
+NewsBoardAPIenv.postman_environment
+
+Procfile
+runtime.txt
