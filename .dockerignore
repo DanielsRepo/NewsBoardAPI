@@ -7,7 +7,7 @@ venv
 __pycache__
 db.sqlite3
 
-NewsBoardAPIenv.postman_environment
+NewsBoardAPIenv.postman_environment.json
 
 Procfile
 runtime.txt
