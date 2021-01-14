@@ -13,5 +13,5 @@ def reset_post_upvotes():
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(reset_post_upvotes, "interval", seconds=5)
+    scheduler.add_job(reset_post_upvotes, "interval", days=1)
     scheduler.start()
