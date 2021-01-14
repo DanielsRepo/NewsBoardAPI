@@ -7,22 +7,10 @@ from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 
 from .models import Post, Comment
 from .serializers import PostSerializer, UserSerializer, CommentSerializer
-
-
-class IsAuthenticatedOrCreate(IsAuthenticated):
-    def has_permission(self, request, view):
-        if request.method == "POST":
-            return True
-        return super(IsAuthenticatedOrCreate, self).has_permission(request, view)
-
-
-class ReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
+from .permissions import IsAuthenticatedOrCreate, ReadOnly
 
 
 class UserViewSet(ModelViewSet):
@@ -49,36 +37,30 @@ class PostsByUserIdApiView(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        if "pk" in self.kwargs:
-            return Post.objects.by_user(self.kwargs["pk"])
+        return Post.objects.by_user(self.kwargs["pk"])
 
 
 class PostsByUserNameApiView(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        if "username" in self.kwargs:
-            return Post.objects.by_user(
-                User.objects.get(username=self.kwargs["username"])
-            )
+        return Post.objects.by_user(User.objects.get(username=self.kwargs["username"]))
 
 
 class CommentsByUserIdApiView(ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        if "pk" in self.kwargs:
-            return Comment.objects.by_user(self.kwargs["pk"])
+        return Comment.objects.by_user(self.kwargs["pk"])
 
 
 class CommentsByUserNameApiView(ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        if "username" in self.kwargs:
-            return Comment.objects.by_user(
-                User.objects.get(username=self.kwargs["username"])
-            )
+        return Comment.objects.by_user(
+            User.objects.get(username=self.kwargs["username"])
+        )
 
 
 class PostViewSet(ModelViewSet):
