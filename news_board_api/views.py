@@ -27,9 +27,7 @@ class UserViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         admin = get_object_or_404(User.objects.all(), username="admin")
         if request.user != admin:
-            raise PermissionDenied(
-                "Only admin can delete someone else's account with his posts"
-            )
+            raise PermissionDenied("Only admin can delete someone else's account with his posts")
         return super().destroy(request, *args, **kwargs)
 
 
@@ -58,9 +56,7 @@ class CommentsByUserNameApiView(ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return Comment.objects.by_user(
-            User.objects.get(username=self.kwargs["username"])
-        )
+        return Comment.objects.by_user(User.objects.get(username=self.kwargs["username"]))
 
 
 class PostViewSet(ModelViewSet):
@@ -111,8 +107,5 @@ class CommentViewSet(ModelViewSet):
 class UpvotePostApiView(APIView):
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post.objects.all(), pk=self.kwargs["pk"])
-        post.upvotes_amount += 1
-        post.save()
-        return Response(
-            data={"success": "Post is upvoted", "link": f"{post.link}"}, status=200
-        )
+        post.upvote()
+        return Response(data={"success": "Post is upvoted", "link": f"{post.link}"}, status=200)

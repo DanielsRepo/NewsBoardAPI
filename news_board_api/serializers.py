@@ -26,6 +26,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["pk", "post", "text", "creation_date", "author"]
+        read_only_fields = ["creation_date"]
 
     def get_author(self, obj):
         return obj.author.username
@@ -46,7 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
             "upvotes_amount",
             "comments",
         ]
-        read_only_fields = ["link"]
+        read_only_fields = ["link", "upvotes_amount", "creation_date"]
 
     def get_author(self, obj):
         return obj.author.username
