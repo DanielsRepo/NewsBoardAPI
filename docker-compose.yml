@@ -13,8 +13,42 @@ services:
     depends_on:
       - db
     restart: always
+
+  celery:
+    build: .
+    command: celery -A news_board worker -l info
+    volumes:
+      - .:/news_board
+    links:
+      - redis
+    depends_on:
+      - web
+      - db
+      - redis
+    restart: always
+
+  celery-beat:
+    build: .
+    command: celery -A news_board beat -l info
+    volumes:
+      - .:/news_board
+    links:
+      - redis
+    depends_on:
+      - web
+      - db
+      - redis
+    restart: always
+
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - 6379:6379
+    restart: always
+
   db:
-    image: postgres:13
+    image: postgres:13-alpine
     env_file:
       - news_board/.env
     restart: always

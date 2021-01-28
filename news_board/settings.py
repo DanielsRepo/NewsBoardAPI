@@ -3,7 +3,6 @@ import environ
 import dj_database_url
 from pathlib import Path
 
-
 env = environ.Env()
 environ.Env.read_env()
 
@@ -22,7 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "news_board_api.apps.NewsBoardApiConfig",
+    "news_board_api",
     "rest_framework",
     "rest_framework.authtoken",
 ]
@@ -32,7 +31,9 @@ REST_FRAMEWORK = {
         "news_board_api.authentication.BearerAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ),
     "DATETIME_FORMAT": "%H:%M %d.%m.%Y",
 }
 
@@ -109,6 +110,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+
+CELERY_BROKER_URL = "redis://redis:6379"
 
 # for Heroku
 
