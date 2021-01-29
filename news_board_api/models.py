@@ -16,7 +16,7 @@ class Post(models.Model):
     link = models.URLField()
     creation_date = models.DateTimeField(default=timezone.now)
     upvotes_amount = models.PositiveIntegerField(default=0)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     objects = PostManager()
 
@@ -45,7 +45,7 @@ class CommentManager(models.Manager):
 class Comment(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    post = models.ForeignKey("Post", on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey("Post", on_delete=models.CASCADE)
 
     objects = CommentManager()

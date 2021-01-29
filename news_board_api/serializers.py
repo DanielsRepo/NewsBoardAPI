@@ -13,7 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        user = User(username=validated_data["username"], email=validated_data["email"])
+        user = User(
+            username=validated_data["username"], email=validated_data["email"]
+        )
         user.set_password(validated_data["password"])
         user.save()
         Token.objects.create(user=user)
@@ -21,19 +23,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SerializerMethodField()
-
     class Meta:
         model = Comment
         fields = ["pk", "post", "text", "creation_date", "author"]
-        read_only_fields = ["creation_date"]
+        read_only_fields = ["creation_date", "author"]
 
-    def get_author(self, obj):
+    @staticmethod
+    def get_author(obj):
         return obj.author.username
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
 
     class Meta:
@@ -47,9 +47,10 @@ class PostSerializer(serializers.ModelSerializer):
             "upvotes_amount",
             "comments",
         ]
-        read_only_fields = ["link", "upvotes_amount", "creation_date"]
+        read_only_fields = ["author", "link", "upvotes_amount", "creation_date"]
 
-    def get_author(self, obj):
+    @staticmethod
+    def get_author(obj):
         return obj.author.username
 
     def get_comments(self, obj):

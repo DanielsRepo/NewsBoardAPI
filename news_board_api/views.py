@@ -27,7 +27,9 @@ class UserViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         admin = get_object_or_404(User.objects.all(), username="admin")
         if request.user != admin:
-            raise PermissionDenied("Only admin can delete someone else's account with his posts")
+            raise PermissionDenied(
+                "Only admin can delete someone else's account with his posts"
+            )
         return super().destroy(request, *args, **kwargs)
 
 
@@ -42,7 +44,9 @@ class PostsByUserNameApiView(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return Post.objects.by_user(User.objects.get(username=self.kwargs["username"]))
+        return Post.objects.by_user(
+            User.objects.get(username=self.kwargs["username"])
+        )
 
 
 class CommentsByUserIdApiView(ListAPIView):
@@ -56,7 +60,9 @@ class CommentsByUserNameApiView(ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return Comment.objects.by_user(User.objects.get(username=self.kwargs["username"]))
+        return Comment.objects.by_user(
+            User.objects.get(username=self.kwargs["username"])
+        )
 
 
 class PostViewSet(ModelViewSet):
@@ -87,9 +93,7 @@ class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        comment_saved = serializer.save()
-        comment_saved.author = self.request.user
-        return super().perform_create(serializer)
+        serializer.save(author=self.request.user)
 
     def update(self, request, *args, **kwargs):
         comment = get_object_or_404(Comment.objects.all(), pk=self.kwargs["pk"])
@@ -108,4 +112,6 @@ class UpvotePostApiView(APIView):
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post.objects.all(), pk=self.kwargs["pk"])
         post.upvote()
-        return Response(data={"success": "Post is upvoted", "link": f"{post.link}"}, status=200)
+        return Response(
+            data={"success": "Post is upvoted", "link": f"{post.link}"}, status=200
+        )
